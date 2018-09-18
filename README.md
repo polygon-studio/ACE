@@ -12,7 +12,7 @@ This program emulates the [Chip-8](https://en.wikipedia.org/wiki/CHIP-8) *interp
 * Add sound support
 * Add options to change resolution
 * *Switch graphics API from OpenGL to Vulkan*
-* *Add support for other hardware like the Sega Saturn*
+* *Add support for other hardware like the Gameboy, 3D0, or Sega Saturn*
 * *Rename this program*
 
 #### Resources
