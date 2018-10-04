@@ -1,6 +1,6 @@
 #pragma once
 #include "chip8.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 // Screen resolution constants
 const int SCREEN_WIDTH	= 64;
@@ -12,7 +12,7 @@ int main(int argc, char* args[])
 {
 	// Emulator customization
 	std::string gameFile;
-	int cpuSpeed;
+	double cpuSpeed;
 
 	std::cout << "Load rom:";
 	std::getline(std::cin, gameFile);
@@ -21,9 +21,9 @@ int main(int argc, char* args[])
 	std::cout << "Enter CPU Speed (in ms):";
 	std::getline(std::cin, cpuSpeedStr);
 	cpuSpeed = atoi(cpuSpeedStr.c_str());
-	std::cout << cpuSpeed << std::endl;
-	
-	
+	cpuSpeed = cpuSpeed >= 0 ? cpuSpeed : -cpuSpeed;
+	std::cout << "CPU set to: " << cpuSpeed << std::endl;
+
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -40,6 +40,7 @@ int main(int argc, char* args[])
 		}
 		else
 		{
+			// Setup SDL render space
 			SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 			SDL_Texture* texture = SDL_CreateTexture(renderer,
 				SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -47,15 +48,16 @@ int main(int argc, char* args[])
 			memset(pixels, 100, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Uint32));
 
 			bool quit = false;
-			bool leftMouseButtonDown = false;
 
 			SDL_Event event;
 
 			// Turn on our Chip-8 machine
 			myChip8.Initialize();
+
 			// Insert a game into our Chip-8 machine
-			//myChip8.LoadGame("invaders.c8");
-			myChip8.LoadGame(gameFile.c_str());
+			if (myChip8.LoadGame(gameFile.c_str()) == false) {
+				quit = true;
+			}
 
 			while (!quit)
 			{
@@ -74,7 +76,7 @@ int main(int argc, char* args[])
 				// Update Chip-8 display
 				if (myChip8.drawFlag) 
 				{
-					DrawGraphics(pixels);
+					myChip8.DrawGraphics(pixels);
 				}
 
 				// Store key press state
