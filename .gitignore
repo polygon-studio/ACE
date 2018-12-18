@@ -1,0 +1,6 @@
+# Builds
+bin/
+bin-int/
+
+# Visual Studio cache
+.vs/
